@@ -1,0 +1,14 @@
+h1 {
+    position: center;
+    font-weight: bold;
+    color: rgba(151, 60, 225, 0.7);
+}
+
+h3 {
+    font-size: 24pt;
+    color: rgba(204, 250, 99, 0.9)
+}
+
+img {
+    position: center;
+}
