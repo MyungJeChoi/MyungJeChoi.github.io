@@ -1,0 +1,38 @@
+title: Myungje Choi
+description: Portfolio + Research + Notes
+timezone: Asia/Seoul
+
+theme: minima
+
+header_pages:
+  - projects.md
+  - researches.md
+  - notes.md
+
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+  researches:
+    output: true
+    permalink: /researches/:name/
+  notes:
+    output: true
+    permalink: /notes/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: page
+  - scope:
+      path: ""
+      type: researches
+    values:
+      layout: page
+  - scope:
+      path: ""
+      type: notes
+    values:
+      layout: page
