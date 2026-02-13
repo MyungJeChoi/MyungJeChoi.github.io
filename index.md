@@ -1,11 +1,13 @@
 ---
 layout: page
-title: Home
+title: Myungje Choi
 permalink: /
 ---
 
-안녕하세요. **최명제**입니다.  
-(여기에 한 줄 포지셔닝: 예. On-device / Agentic AI / Android platform 등)
+안녕하세요. **최명제**입니다.  \
+Research Interest:
+- Online Traffic Prediction
+- GraphRAG Efficiency
 
 ## Featured Projects
 {% assign items = site.projects | sort: "date" | reverse %}
