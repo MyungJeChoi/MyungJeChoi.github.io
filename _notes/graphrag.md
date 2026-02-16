@@ -121,6 +121,25 @@ flowchart LR
   GS --> EMB2[entity/rel description embeddings]
   CR --> EMB3[community report embeddings]
 </div>
+<script>
+  (function () {
+    function renderMermaid() {
+      if (!window.mermaid) return;
+      mermaid.initialize({ startOnLoad: false });
+      mermaid.run({ querySelector: ".mermaid" });
+    }
+
+    if (window.mermaid) {
+      renderMermaid();
+      return;
+    }
+
+    var script = document.createElement("script");
+    script.src = "https://unpkg.com/mermaid@10/dist/mermaid.min.js";
+    script.onload = renderMermaid;
+    document.head.appendChild(script);
+  })();
+</script>
 
 ---
 
