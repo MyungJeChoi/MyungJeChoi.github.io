@@ -107,7 +107,7 @@ GraphRAG 기본 파이프라인(“default dataflow”)을 요약하면 다음 6
 - 기본적으로 entity descriptions, text unit text, community report text를 임베딩한다.
 
 #### Indexing 전체 다이어그램(mermaid)
-```mermaid
+<div class="mermaid">
 flowchart LR
   D[Documents] --> TU[TextUnits (chunks)]
   TU --> GE[Extract Entities/Relationships]
@@ -120,7 +120,7 @@ flowchart LR
   TU --> EMB1[text unit embeddings]
   GS --> EMB2[entity/rel description embeddings]
   CR --> EMB3[community report embeddings]
-```
+</div>
 
 ---
 

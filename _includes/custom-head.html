@@ -1,15 +1,28 @@
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    var mermaidCodeBlocks = document.querySelectorAll("pre code.language-mermaid");
+    var wrappers = document.querySelectorAll(".language-mermaid");
+    var directCode = document.querySelectorAll("pre code.language-mermaid");
+    var index = 0;
 
-    mermaidCodeBlocks.forEach(function (codeBlock, index) {
-      var pre = codeBlock.parentElement;
-      var graphDefinition = codeBlock.textContent;
+    wrappers.forEach(function (wrapper) {
+      var code = wrapper.querySelector("code");
+      if (!code) return;
       var container = document.createElement("div");
       container.className = "mermaid";
-      container.id = "mermaid-" + index;
-      container.textContent = graphDefinition;
+      container.id = "mermaid-" + index++;
+      container.textContent = code.textContent;
+      wrapper.parentNode.replaceChild(container, wrapper);
+    });
+
+    directCode.forEach(function (code) {
+      if (code.closest(".language-mermaid")) return;
+      var pre = code.parentElement;
+      if (!pre || !pre.parentNode) return;
+      var container = document.createElement("div");
+      container.className = "mermaid";
+      container.id = "mermaid-" + index++;
+      container.textContent = code.textContent;
       pre.parentNode.replaceChild(container, pre);
     });
 
