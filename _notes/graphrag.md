@@ -69,10 +69,15 @@ GraphRAG 기본 파이프라인(“default dataflow”)을 요약하면 다음 6
 ### Phase 3: Graph Extraction
 각 TextUnit에서 “그래프 기본 요소(primitives)”를 뽑는다.
 
+![Phase 3 Graph Extraction](./graphrag_images/phase3.png)
+
 #### **3-1) Entity & Relationship Extraction**
 - 각 TextUnit을 대상으로 LLM을 프롬프트해서, subgraph-per-TextUnit 형태로 추출
   - entity: `{title, type, description}`
-  - relationship: `{source, target, description}`
+  - relationship: `{source, target, relationship_description, relationship_strength}`
+    - `relationship_description` : 왜 관련있는지 설명
+    - `relationship_strength` : 관련성 점수 (few-shot에서는 보통 2-9), Leiden 커뮤니티 계산 시 중요
+  - TextUnit 내의 모든 entity, relationship을 각각 하나의 집합으로 모아서 저장
 - 이후 subgraph들을 merge:
   - entity는 `(title, type)`가 같으면 description을 배열로 누적
   - relationship은 `(source, target)`이 같으면 description을 배열로 누적
@@ -80,8 +85,8 @@ GraphRAG 기본 파이프라인(“default dataflow”)을 요약하면 다음 6
 > 사실상 (title, type) **exact** match을 사용하므로, 여러 노드로 나눠질 수 있음. 
 
 #### **3-2) Entity & Relationship Summarization**
-- 병합된 description 배열을 LLM이 다시 요약해서,
-- 엔티티/관계마다 **단일 concise description**을 만든다.
+- 위에서 병합된 description 배열을 기준으로 **단일 concise description**을 생성.
+- LLM에게 각 설명에서의 서로 다른 정보를 모두 포착하는 짧은 요약을 만들게 해서, **엔티티/관계마다** 단일 concise description을 갖게 한다.
 
 #### **3-3) Claim Extraction** (optional)
 - (독립 워크플로) claims를 추출해서 covariates로 저장한다.
