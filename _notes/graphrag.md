@@ -69,7 +69,17 @@ GraphRAG 기본 파이프라인(“default dataflow”)을 요약하면 다음 6
 ### Phase 3: Graph Extraction
 각 TextUnit에서 “그래프 기본 요소(primitives)”를 뽑는다.
 
-![Phase 3 Graph Extraction](/assets/images/notes/graphrag/phase3.png)
+<div class="mermaid">
+flowchart TB
+  TU["TextUnits"] --> EXT["LLM Extraction per TextUnit"]
+  EXT --> ESET["Entity Set<br/>{title, type, description}"]
+  EXT --> RSET["Relationship Set<br/>{source, target, description, strength}"]
+  ESET --> MERGE["Merge Across TextUnits<br/>(Entity Resolution)"]
+  RSET --> MERGE
+  MERGE --> SUM["Summarize Descriptions<br/>to Single Concise Text"]
+  EXT -. optional .-> CLAIM["Claim Extraction"]
+  CLAIM --> COV["Covariates"]
+</div>
 
 #### **3-1) Entity & Relationship Extraction**
 - 각 TextUnit을 대상으로 LLM을 프롬프트해서, subgraph-per-TextUnit 형태로 추출
@@ -236,7 +246,7 @@ LazyGraphRAG는 또 다른 확장으로, “relevance test budget” 같은 예�
 
 - GraphRAG 논문(From Local to Global…):  
   https://arxiv.org/html/2404.16130v1
-- GraphRAG 공식 문서
+- GraphRAG 공식 문서  
   https://microsoft.github.io/graphrag/
 - MS Research Blog: Dynamic Community Selection  
   https://www.microsoft.com/en-us/research/blog/graphrag-improving-global-search-via-dynamic-community-selection/
