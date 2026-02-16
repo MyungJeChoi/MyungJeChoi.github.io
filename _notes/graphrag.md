@@ -89,26 +89,36 @@ GraphRAG 기본 파이프라인(“default dataflow”)을 요약하면 다음 6
 - LLM에게 각 설명에서의 서로 다른 정보를 모두 포착하는 짧은 요약을 만들게 해서, **엔티티/관계마다** 단일 concise description을 갖게 한다.
 
 #### **3-3) Claim Extraction** (optional)
-- (독립 워크플로) claims를 추출해서 covariates로 저장한다.
-- 문서 정의: claims는 “positive factual statements”이며 status/time-bounds를 가진다.
-- claim extraction은 기본적으로 OFF이며 보통 prompt tuning이 필요하다고 안내한다.
+- 독립 workflow로서, claims를 추출해서 covariates로 저장한다.
+- claims는 “positive factual statements”이며 status/time-bounds를 포함해 평가된 형태로 저장되며, 이를 Covariates라는 1차 산출물로 내보낸다.
+- Covariates의 field 요소
+  - `subject_id`: 주장을 “수행하는” 주체 엔티티
+  - `object_id`: 그 행동이 “가해지는/대상이 되는” 엔티티
+  - `type`: claim 타입(카테고리)
+  - `description`: 행동/주장의 서술
+  - `status`: LLM이 평가한 신뢰도/정확성( TRUE / FALSE / SUSPECTED )
+  - `start_date`, `end_date`, `source_text`, `text_unit_id` 등
+- claim extraction은 기본적으로 OFF이며 보통 prompt tuning이 필요하다고 안내됨.
+- claims는 보통 fraud 같은 malicious behavior 탐지에 맞춰져 있어서 모든 데이터셋에 유용하진 않다.
 
 ### Phase 4: Graph Augmentation (커뮤니티 계층 생성)
-- 엔티티 그래프에 **Hierarchical Leiden**으로 커뮤니티 계층을 만든다.
-- 커뮤니티 크기가 threshold 이하가 될 때까지 재귀적으로 클러스터링한다.
+- 엔티티 그래프에 ***Hierarchical* Leiden**으로 커뮤니티 계층을 만든다.
+  - Leiden 알고리즘 : singleton (각 노드가 1개의 community) 상태에서 modularity을 기준으로 최적화된 cluster을 찾음
+  - **Hierarchical** Leiden : Leiden을 통해 생성된 각 community subgraph에 대해 재귀적으로 Leiden을 적용해 이하 level에서의 community을 얻음.
+- 커뮤니티 크기가 threshold 이하가 될 때까지, 또는 unsplittable할 때까지 재귀적으로 클러스터링한다.
 
 ### Phase 5: Community Summarization (커뮤니티 리포트 생성)
-- 각 커뮤니티(레벨별 포함)에 대해 LLM이 **community report**를 생성한다.
-- report는 해당 커뮤니티 서브구조의 핵심 entities/relationships/claims를 참조한다.
-- 또한 shorthand로 쓰기 위한 `summary`도 별도로 생성한다.
+- 각 레벨의 각 커뮤니티에 대해 LLM이 **community report**를 생성한다.
+- report(`full_content`)는 해당 커뮤니티 서브구조의 핵심 entities/relationships/claims를 참조한다.
+- shorthand로 쓰기 위한 `summary`도 별도로 생성한다.
 
 ### Phase 6: Text Embeddings
-- downstream vector search를 위해 임베딩을 생성한다.
-- 기본적으로 entity descriptions, text unit text, community report text를 임베딩한다.
+- downstream vector search를 위해 `text_unit_text`, `entity_description`, `community_full_content`를 임베딩해 vector store에 저장
+- 추후 query 시 local, global search에 활용됨
 
 #### Indexing 전체 다이어그램(mermaid)
 <div class="mermaid">
-flowchart LR
+flowchart TB
   D["Documents"] --> TU["TextUnits (chunks)"]
   TU --> GE["Extract Entities/Relationships"]
   GE --> GS["Summarize entity/rel descriptions"]
@@ -140,7 +150,7 @@ GraphRAG는 “질의 유형”을 크게 두 가지로 나눠서 처리한다.
 1) 입력: User Query + (옵션) Conversation History
 2) **지정한 level의 community reports**를 가져옴
 3) map 단계:
-   - community reports를 “pre-defined size”의 text chunk로 분절
+   - community reports를 predefined size의 text chunk로 분절
    - 각 chunk마다 **Rated Intermediate Response** 생성:
      - point 리스트 + 각 point의 중요도 rating(숫자)
 4) reduce 단계:
@@ -158,42 +168,46 @@ GraphRAG는 “질의 유형”을 크게 두 가지로 나눠서 처리한다.
 ```
 
 ### 튜닝 포인트(설계 노브)
-- `community level` 선택: 낮은 레벨(더 상세)일수록 thorough하지만 비용↑ 가능
+- `community level` 선택: 
+  - 더 낮은 레벨(더 많은/더 상세 report) → 답은 더 thorough해지지만 시간, LLM 비용 증가
+  - 더 높은 레벨(적은/추상 report) → 비용 절감, 대신 coarse한 답변
 - `max_data_tokens`: 컨텍스트 토큰 예산
-- map/reduce 프롬프트, 병렬성(concurrency)
+- map/reduce 프롬프트, map 단계에서의 concurrency
 
 ---
 
 ## 4.2 Local Search (Entity-based Reasoning)
 
 ### 핵심 아이디어
-- 질의에 대해 **의미적으로 관련된 엔티티들을 먼저 찾고**, 그 엔티티들을 “그래프 접근점(access points)”으로 삼아,
-- 그래프와 문서 청크에서 관련 정보를 모아 **단일 컨텍스트 윈도우**를 구성한 뒤,
+- User Query에 대해 **의미적으로 관련된 엔티티들을 먼저 찾고**, 그 엔티티들을 access points로 삼아,
+- graph와 문서 chunk에서 관련 정보를 모아 **단일 context window**를 구성한 뒤,
 - LLM이 답을 생성한다.
 
 ### 알고리즘 개요
 1) 입력: User Query + (옵션) Conversation History
-2) **Entity Description Embedding**으로 관련 엔티티(Extracted Entities) 선택
-3) 후보 수집:
-   - Candidate Text Units (엔티티가 등장한 청크)
-   - Candidate Community Reports (엔티티가 속한 커뮤니티 리포트)
-   - Candidate Entities/Relationships (연결 이웃)
+   - (structured) entity/relationship/community report/covariates
+   - (unstructured) 원문 문서의 관련 text chunks 
+2) **Entity Description Embedding**으로 질의와 의미적으로 가까운 entity 선택
+3) 그 entity를 **그래프 탐색의 “진입점”**으로 삼아 후보 수집:
+   - Candidate Text Units (entity가 등장한 chunk)
+   - Candidate Community Reports (entity가 속한 community report)
+   - Candidate Entities/Relationships (nbd)
    - Candidate Covariates (claims, 옵션)
 4) 후보를 **Ranking + Filtering**하여 단일 컨텍스트 창 크기에 맞게 압축
 5) LLM이 답 생성
 
 ---
 
-## 5. DCS(Dynamic Community Selection) 및 비용/예산 관점(확장)
+## 5. DCS(Dynamic Community Selection) 및 비용/예산 관점
 
-Global Search의 고정 레벨 방식은 비쌀 수 있다.  
-MS Research는 이를 개선하기 위해 **Dynamic Community Selection(DCS)**을 제안했다:
+**문제**: 정적 Global search는 “미리 정한 레벨의 report를 전부 map-reduce에 넣는” 구조라서, 질의와 무관한 report까지 포함되어 비싸고 비효율적일 수 있음.
+→ MS Research의 **DCS**는 map-reduce 전에 “어떤 커뮤니티 report가 관련 있는지”를 계층을 따라가며 prune하는 단계를 추가함.
 
-- 루트에서 시작해 LLM이 community report의 relevance를 **rate(분류/평가)**  
-- irrelevant면 그 노드와 서브커뮤니티를 제거(prune)  
-- relevant면 자식으로 내려가 반복  
-- 마지막에 relevant reports만 map-reduce에 넘긴다.
-- rating은 분류 문제라 생성보다 쉬워 더 싼 모델을 쓰기도 한다.
+- community root에서 시작해 LLM이 community report의 relevance를 **rate(분류/평가)**  
+  - irrelevant → 그 node와 subcommunity를 prune  
+  - relevant → 자식으로 내려가 반복  
+- 마지막에 **relevant reports만 map-reduce**에 넘긴다.
+- rating은 분류 문제(관련성 판정)라 생성보다 쉬워 더 싼 모델을 쓰기도 한다.
 
 LazyGraphRAG는 또 다른 확장으로, “relevance test budget” 같은 예산 파라미터로 cost-quality trade-off를 제어하는 아이디어를 소개한다.
 
@@ -205,14 +219,14 @@ LazyGraphRAG는 또 다른 확장으로, “relevance test budget” 같은 예�
 ## 6. 언제 Global vs Local을 쓰나? (실무적 가이드)
 
 - **Global Search가 잘 맞는 질문**
-  - “전체 테마/트렌드/요약/종합/핵심 이슈 top-k”
-  - “키워드가 없거나, 코퍼스 전체를 훑어야 하는 질문”
+  - 질문이 corpus 전체를 가로지르는 테마/트렌드/패턴을 묻는 경우
+    - 예: 지난 5년간 여러 조직에 걸쳐 AI 연구 트렌드는?
+  - 답이 특정 document/chunk에만 있지 않고, 여러 군데 흩어진 정보를 종합해야 하는 경우
 
 - **Local Search가 잘 맞는 질문**
-  - 특정 엔티티 중심 QA:
-    - “A는 누구/무엇?”
-    - “A와 B의 관계는?”
-    - “A의 주요 사건/특징은?”
+  - 질문이 특정 entity/사건/기능처럼 “대상”이 비교적 명확한 경우
+    - 예: 10월 4일 Cosmos DB 팀이 릴리즈한 기능은? (답이 소수 text unit에 있을 가능성이 큼)
+  - "어느 문서/구절에 근거가 있는지" 같은 정밀 근거 기반 답변이 필요한 경우(entity를 진입점으로 문서 chunk까지 끌어옴)
 
 > 구현에서는 보통 라우터(규칙 기반/분류기/LLM)를 얹어 자동 선택하기도 하지만, GraphRAG 자체는 global/local이 분리된 엔진이라는 관점이 기본이다.
 
@@ -222,14 +236,8 @@ LazyGraphRAG는 또 다른 확장으로, “relevance test budget” 같은 예�
 
 - GraphRAG 논문(From Local to Global…):  
   https://arxiv.org/html/2404.16130v1
-- GraphRAG 공식 문서: Default dataflow(인덱싱 파이프라인)  
-  https://microsoft.github.io/graphrag/index/default_dataflow/
-- GraphRAG 공식 문서: Outputs(테이블 스키마)  
-  https://microsoft.github.io/graphrag/index/outputs/
-- GraphRAG 공식 문서: Global Search  
-  https://microsoft.github.io/graphrag/query/global_search/
-- GraphRAG 공식 문서: Local Search  
-  https://microsoft.github.io/graphrag/query/local_search/
+- GraphRAG 공식 문서
+  https://microsoft.github.io/graphrag/
 - MS Research Blog: Dynamic Community Selection  
   https://www.microsoft.com/en-us/research/blog/graphrag-improving-global-search-via-dynamic-community-selection/
 - MS Research Blog: LazyGraphRAG  
