@@ -109,37 +109,18 @@ GraphRAG 기본 파이프라인(“default dataflow”)을 요약하면 다음 6
 #### Indexing 전체 다이어그램(mermaid)
 <div class="mermaid">
 flowchart LR
-  D[Documents] --> TU[TextUnits (chunks)]
-  TU --> GE[Extract Entities/Relationships]
-  GE --> GS[Summarize entity/rel descriptions]
-  TU --> CE[Claim extraction (optional)]
-  GS --> GT[Graph tables: entities/relationships/(covariates)]
-  GT --> CD[Hierarchical Leiden community detection]
-  CD --> C[communities table]
-  C --> CR[community_reports (summary/full_content)]
-  TU --> EMB1[text unit embeddings]
-  GS --> EMB2[entity/rel description embeddings]
-  CR --> EMB3[community report embeddings]
+  D["Documents"] --> TU["TextUnits (chunks)"]
+  TU --> GE["Extract Entities/Relationships"]
+  GE --> GS["Summarize entity/rel descriptions"]
+  TU --> CE["Claim extraction (optional)"]
+  GS --> GT["Graph tables: entities / relationships / covariates"]
+  GT --> CD["Hierarchical Leiden community detection"]
+  CD --> C["communities table"]
+  C --> CR["community_reports (summary/full_content)"]
+  TU --> EMB1["text unit embeddings"]
+  GS --> EMB2["entity/rel description embeddings"]
+  CR --> EMB3["community report embeddings"]
 </div>
-<script>
-  (function () {
-    function renderMermaid() {
-      if (!window.mermaid) return;
-      mermaid.initialize({ startOnLoad: false });
-      mermaid.run({ querySelector: ".mermaid" });
-    }
-
-    if (window.mermaid) {
-      renderMermaid();
-      return;
-    }
-
-    var script = document.createElement("script");
-    script.src = "https://unpkg.com/mermaid@10/dist/mermaid.min.js";
-    script.onload = renderMermaid;
-    document.head.appendChild(script);
-  })();
-</script>
 
 ---
 
