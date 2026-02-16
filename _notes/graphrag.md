@@ -69,7 +69,7 @@ GraphRAG 기본 파이프라인(“default dataflow”)을 요약하면 다음 6
 ### Phase 3: Graph Extraction
 각 TextUnit에서 “그래프 기본 요소(primitives)”를 뽑는다.
 
-![Phase 3 Graph Extraction](./graphrag_images/phase3.png)
+![Phase 3 Graph Extraction](/assets/images/notes/graphrag/phase3.png)
 
 #### **3-1) Entity & Relationship Extraction**
 - 각 TextUnit을 대상으로 LLM을 프롬프트해서, subgraph-per-TextUnit 형태로 추출
