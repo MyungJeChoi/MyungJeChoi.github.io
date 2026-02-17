@@ -157,13 +157,13 @@ GraphRAG는 “질의 유형”을 크게 두 가지로 나눠서 처리한다.
 - 이를 **map-reduce**로 처리해서 “전역 요약/종합 답변”을 만든다.
 
 ### 알고리즘 개요
-1) 입력: User Query + (옵션) Conversation History
-2) **지정한 level의 community reports**를 가져옴
-3) map 단계:
+1. 입력: User Query + (옵션) Conversation History
+2. **지정한 level의 community reports**를 가져옴
+3. map 단계:
    - community reports를 predefined size의 text chunk로 분절
    - 각 chunk마다 **Rated Intermediate Response** 생성:
      - point 리스트 + 각 point의 중요도 rating(숫자)
-4) reduce 단계:
+4. reduce 단계:
    - intermediate responses에서 **중요한 points를 필터링/집계(Ranking + Filtering)**
    - aggregated points를 컨텍스트로 최종 답 생성
 
@@ -194,23 +194,23 @@ GraphRAG는 “질의 유형”을 크게 두 가지로 나눠서 처리한다.
 - LLM이 답을 생성한다.
 
 ### 알고리즘 개요
-1) 입력: User Query + (옵션) Conversation History
+1. 입력: User Query + (옵션) Conversation History
    - (structured) entity/relationship/community report/covariates
    - (unstructured) 원문 문서의 관련 text chunks 
-2) **Entity Description Embedding**으로 질의와 의미적으로 가까운 entity 선택
-3) 그 entity를 **그래프 탐색의 “진입점”**으로 삼아 후보 수집:
+2. **Entity Description Embedding**으로 질의와 의미적으로 가까운 entity 선택
+3. 그 entity를 **그래프 탐색의 “진입점”**으로 삼아 후보 수집:
    - Candidate Text Units (entity가 등장한 chunk)
    - Candidate Community Reports (entity가 속한 community report)
    - Candidate Entities/Relationships (nbd)
    - Candidate Covariates (claims, 옵션)
-4) 후보를 **Ranking + Filtering**하여 단일 컨텍스트 창 크기에 맞게 압축
-5) LLM이 답 생성
+4. 후보를 **Ranking + Filtering**하여 단일 컨텍스트 창 크기에 맞게 압축
+5. LLM이 답 생성
 
 ---
 
-## 5. DCS(Dynamic Community Selection) 및 비용/예산 관점
-
-**문제**: 정적 Global search는 “미리 정한 레벨의 report를 전부 map-reduce에 넣는” 구조라서, 질의와 무관한 report까지 포함되어 비싸고 비효율적일 수 있음.
+## 5. 연구 확장 지점
+### 5.1 DCS(Dynamic Community Selection)
+**문제**: 정적 Global search는 “미리 정한 레벨의 report를 전부 map-reduce에 넣는” 구조라서, 질의와 무관한 report까지 포함되어 비싸고 비효율적일 수 있음.  
 → MS Research의 **DCS**는 map-reduce 전에 “어떤 커뮤니티 report가 관련 있는지”를 계층을 따라가며 prune하는 단계를 추가함.
 
 - community root에서 시작해 LLM이 community report의 relevance를 **rate(분류/평가)**  
@@ -219,10 +219,12 @@ GraphRAG는 “질의 유형”을 크게 두 가지로 나눠서 처리한다.
 - 마지막에 **relevant reports만 map-reduce**에 넘긴다.
 - rating은 분류 문제(관련성 판정)라 생성보다 쉬워 더 싼 모델을 쓰기도 한다.
 
+### 5.2 LazyGraphRAG
 LazyGraphRAG는 또 다른 확장으로, “relevance test budget” 같은 예산 파라미터로 cost-quality trade-off를 제어하는 아이디어를 소개한다.
 
-> (연구 메모) 우리가 논의한 Frontier+Budget DP는  
-> “커뮤니티 계층에서 어떤 report들을 컨텍스트에 넣을지”를 **토큰 예산 하 최적화 문제**로 만드는 방향으로 연결 가능하다.
+### 5.3 Frontier + Budget DP (Ours)
+- (연구 메모) 우리가 논의한 Frontier+Budget DP는  
+- “커뮤니티 계층에서 어떤 report들을 컨텍스트에 넣을지”를 **토큰 예산 하 최적화 문제**로 만드는 방향으로 연결 가능하다.
 
 ---
 
@@ -244,11 +246,7 @@ LazyGraphRAG는 또 다른 확장으로, “relevance test budget” 같은 예�
 
 ## 7. 참고 문헌/링크
 
-- GraphRAG 논문(From Local to Global…):  
-  https://arxiv.org/html/2404.16130v1
-- GraphRAG 공식 문서  
-  https://microsoft.github.io/graphrag/
-- MS Research Blog: Dynamic Community Selection  
-  https://www.microsoft.com/en-us/research/blog/graphrag-improving-global-search-via-dynamic-community-selection/
-- MS Research Blog: LazyGraphRAG  
-  https://www.microsoft.com/en-us/research/blog/lazygraphrag-setting-a-new-standard-for-quality-and-cost/
+- [GraphRAG 논문 (From Local to Global...)](https://arxiv.org/html/2404.16130v1)
+- [GraphRAG 공식 문서](https://microsoft.github.io/graphrag/)
+- [MS Research Blog: Dynamic Community Selection](https://www.microsoft.com/en-us/research/blog/graphrag-improving-global-search-via-dynamic-community-selection/)
+- [MS Research Blog: LazyGraphRAG](https://www.microsoft.com/en-us/research/blog/lazygraphrag-setting-a-new-standard-for-quality-and-cost/)
