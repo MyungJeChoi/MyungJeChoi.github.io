@@ -6,7 +6,7 @@ date: 2026-02-15
 # GraphRAG 작동 원리 (Microsoft GraphRAG)
 
 > 업데이트: 2026-02-15  
-> 목적: GraphRAG가 “문서 → KG/커뮤니티 → (global/local) 검색”으로 이어지는 전체 흐름을 **데이터 모델 + 알고리즘** 관점에서 정리
+> 목적: GraphRAG가 가지는 “문서 → KG/커뮤니티 → (global/local) 검색”으로 이어지는 전체 흐름을 **데이터 모델 + 알고리즘** 관점에서 정리
 
 ---
 
