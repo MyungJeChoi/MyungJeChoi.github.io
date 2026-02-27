@@ -1,0 +1,66 @@
+---
+title: "PoC NL2SQL Framework - Evaluation (toy dataset)"
+date: 2026-02-25
+summary: "NL2SQL PoC Evaluation"
+---
+
+
+```bash
+(.venv) (ds) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s http://127.0.0.1:8750/admin/kg/version -H "X-API-KEY: $ADMIN_API_KEY" | jq
+{
+  "kg_version": "b369b2ea-8cce-4949-97ff-e2ae085f4e99"
+}
+```
+
+```bash
+(.venv) (ds) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s -X POST http://127.0.0.1:8750/admin/synonym \
+>   -H "X-API-KEY: $ADMIN_API_KEY$" -H "Content-Type: application/json" \
+>   -d '{"alias_term_id":"T_BIGADONG","alias_text":"비가동시간","canonical_term_id":"T_DOWNTIME","canonical_text":"다운타임","reason":"demo_add","source_type":"manual"}' | jq
+{
+  "ok": true,
+  "kg_version": "3d9eaa22-d387-49ee-af1d-4f699377624f",
+  "before": {
+    "alias": {
+      "term_id": "T_BIGADONG",
+      "text": "비가동",
+      "canonical": false
+    },
+    "canonical": {
+      "term_id": "T_DOWNTIME",
+      "text": "다운타임",
+      "canonical": true
+    }
+  },
+  "after": {
+    "alias": {
+      "term_id": "T_BIGADONG",
+      "text": "비가동시간",
+      "canonical": false
+    },
+    "canonical": {
+      "term_id": "T_DOWNTIME",
+      "text": "다운타임",
+      "canonical": true
+    }
+  }
+}
+```
+
+```bash
+(.venv) (ds) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s http://127.0.0.1:8750/admin/kg/version -H "X-API-KEY: 1a2a3a4a" | jq
+{
+  "kg_version": "3d9eaa22-d387-49ee-af1d-4f699377624f"
+}
+```
+
+```bash
+(ds) dnmslyyd@ncia10:~$ ~/opt/neo4j-current/bin/cypher-shell -a bolt://localhost:17687 -u neo4j -p 'DSproject!!' "MATCH (a:Term {text:'비가동시간'})-[:SYNONYM_OF]->(c:Term {text:'다운타임'}) RETURN a.term_id, c.term_id;"
++-----------------------------+
+| a.term_id    | c.term_id    |
++-----------------------------+
+| "T_BIGADONG" | "T_DOWNTIME" |
++-----------------------------+
+
+1 row
+ready to start consuming query after 47 ms, results consumed after another 2 ms
+```
