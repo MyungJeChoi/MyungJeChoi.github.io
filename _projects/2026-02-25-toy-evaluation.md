@@ -3,6 +3,7 @@ title: "PoC NL2SQL Framework - Evaluation (toy dataset)"
 date: 2026-02-25
 summary: "NL2SQL PoC Evaluation"
 ---
+
 ## 최초 KG version 확인
 
 ```bash
