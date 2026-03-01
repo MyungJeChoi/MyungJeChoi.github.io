@@ -4,7 +4,7 @@ title: "Projects - LLM-augmented NL2SQL"
 permalink: /projects/llm_nl2sql/
 ---
 
-{% assign items = site.projects | where_exp: "p", "p.categories contains 'heuristic_nl2sql'" | sort: "date" | reverse %}
+{% assign items = site.projects | where_exp: "p", "p.categories contains 'llm_nl2sql'" | sort: "date" | reverse %}
 
 {% if items.size == 0 %}
 ## No posts
