@@ -2,6 +2,7 @@
 title: "PoC NL2SQL Framework - KG update evaluation"
 date: 2026-02-25
 summary: "NL2SQL PoC Evaluation"
+categories: [heuristic_nl2sql]
 ---
 
 ## 추가 점검 항목

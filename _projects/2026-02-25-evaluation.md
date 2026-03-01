@@ -2,6 +2,7 @@
 title: "PoC NL2SQL Framework - Evaluation"
 date: 2026-02-25
 summary: "NL2SQL PoC Evaluation"
+categories: [heuristic_nl2sql]
 ---
 
 ## 평가 과정 요약
