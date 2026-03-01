@@ -52,22 +52,23 @@ permalink: /
       alt="최명제"
     />
   </picture>
-  <div class="hero__content" markdown="1">
-
-안녕하세요. **최명제**입니다.  
-CV link: [here](https://drive.google.com/file/d/14qXEVtlkrHqi7qTAGqEa5_LFJAyW6cIe/view?usp=sharing)  
-
-### Current Status:
-- Postdoctoral Researcher
-- Numerical Computing & Image Analysis Lab
-- Research Institute of Mathematics
-- Seoul National University
-
-### Research Interest:
-- Time Series Forecasting & Anomaly Detection
-- Graph Neural Networks
-- Global Search Algorithms for GraphRAG
-- LLM-enhanced NL2SQL Framework
+  <div class="hero__content">
+    <p>안녕하세요. <strong>최명제</strong>입니다.</p>
+    <p>CV link: <a href="https://drive.google.com/file/d/14qXEVtlkrHqi7qTAGqEa5_LFJAyW6cIe/view?usp=sharing">here</a></p>
+    <h3>Current Status:</h3>
+    <ul>
+      <li>Postdoctoral Researcher</li>
+      <li>Numerical Computing &amp; Image Analysis Lab</li>
+      <li>Research Institute of Mathematics</li>
+      <li>Seoul National University</li>
+    </ul>
+    <h3>Research Interest:</h3>
+    <ul>
+      <li>Time Series Forecasting &amp; Anomaly Detection</li>
+      <li>Graph Neural Networks</li>
+      <li>Global Search Algorithms for GraphRAG</li>
+      <li>LLM-enhanced NL2SQL Framework</li>
+    </ul>
   </div>
 </section>
 
