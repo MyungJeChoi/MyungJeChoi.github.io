@@ -52,7 +52,7 @@ pre {
 - 불완전한 query를 전송   
   → 추가 질문을 유도하는 내용을 제공함.
 ```bash
-(.venv) (base) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s -X POST http://127.0.0.1:8750/agent/chat -H 'Content-Type: application/json' -d '{"message":"장비 top10","debug":true}' | jq
+curl -s -X POST http://127.0.0.1:8750/agent/chat -H 'Content-Type: application/json' -d '{"message":"장비 top10","debug":true}' | jq
 {
   "ok": true,
   "request_id": "20fe3bed-5017-4929-a1ee-d4d2064970ed",
@@ -82,7 +82,7 @@ pre {
 - 추가 질문에서 추천한 키워드를 제공  
   → 정상적으로 10개에 대한 정보를 제공함.
 ```bash
-(.venv) (base) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s -X POST http://127.0.0.1:8750/agent/chat -H 'Content-Type: application/json' -d '{"message":"다운타임","debug":true,"thread_id":"e1da7301-1ef9-40b1-9f85-752fc27ca2fd"}' | jq
+curl -s -X POST http://127.0.0.1:8750/agent/chat -H 'Content-Type: application/json' -d '{"message":"다운타임","debug":true,"thread_id":"e1da7301-1ef9-40b1-9f85-752fc27ca2fd"}' | jq
 {
   "ok": true,
   "request_id": "c5834c86-5449-44bb-a02c-f7fc4e9fe3b1",
@@ -170,7 +170,7 @@ pre {
 - 추천된 추가 질문 반응 예시  
   → "1등 장비" 문맥을 파악하고 이벤트 50개 display
 ```bash
-(.venv) (base) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s -X POST http://127.0.0.1:8750/agent/chat -H 'Content-Type: application/json' -d '{"message":"1등 장비 이벤트 보여줘","debug":true,"thread_id":"e1da7301-1ef9-40b1-9f85-752fc27ca2fd"}' | jq
+curl -s -X POST http://127.0.0.1:8750/agent/chat -H 'Content-Type: application/json' -d '{"message":"1등 장비 이벤트 보여줘","debug":true,"thread_id":"e1da7301-1ef9-40b1-9f85-752fc27ca2fd"}' | jq
 {
   "ok": true,
   "request_id": "5cbe8d76-d39b-41be-b30f-f1bf03a81a93",

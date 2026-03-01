@@ -13,7 +13,6 @@ permalink: /projects/
 ### [{{ p.title }}]({{ p.url | relative_url }})
 {{ p.summary }}
 
-{% if p.tags %}**Tags:** {{ p.tags | join: ", " }}{% endif %}  
 {% if p.github %}[GitHub]({{ p.github }}){% endif %}{% if p.demo %} · [Demo]({{ p.demo }}){% endif %}
 
 ---

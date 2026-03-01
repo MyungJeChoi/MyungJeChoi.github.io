@@ -28,7 +28,7 @@ categories: [heuristic_nl2sql, nl2sql]
 
 ## 최초 KG version 확인
 ```bash
-(.venv) (ds) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s http://127.0.0.1:8750/admin/kg/version -H "X-API-KEY: $ADMIN_API_KEY" | jq
+curl -s http://127.0.0.1:8750/admin/kg/version -H "X-API-KEY: $ADMIN_API_KEY" | jq
 {
   "kg_version": "b369b2ea-8cce-4949-97ff-e2ae085f4e99"
 }
@@ -37,9 +37,9 @@ categories: [heuristic_nl2sql, nl2sql]
 - (비가동시간) -(synonym of)-> (다운타임)
 
 ```bash
-(.venv) (ds) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s -X POST http://127.0.0.1:8750/admin/synonym \
->   -H "X-API-KEY: $ADMIN_API_KEY$" -H "Content-Type: application/json" \
->   -d '{"alias_term_id":"T_BIGADONG","alias_text":"비가동시간","canonical_term_id":"T_DOWNTIME","canonical_text":"다운타임","reason":"demo_add","source_type":"manual"}' | jq
+curl -s -X POST http://127.0.0.1:8750/admin/synonym \
+ -H "X-API-KEY: $ADMIN_API_KEY$" -H "Content-Type: application/json" \
+ -d '{"alias_term_id":"T_BIGADONG","alias_text":"비가동시간","canonical_term_id":"T_DOWNTIME","canonical_text":"다운타임","reason":"demo_add","source_type":"manual"}' | jq
 {
   "ok": true,
   "kg_version": "3d9eaa22-d387-49ee-af1d-4f699377624f",
@@ -74,7 +74,7 @@ categories: [heuristic_nl2sql, nl2sql]
 - 최초 KG version `"b369b2ea-8cce-4949-97ff-e2ae085f4e99"`에서 변경됨을 확인할 수 있다.
 
 ```bash
-(.venv) (ds) dnmslyyd@ncia10:~/my_studies/DS/kg_nl2sql_platform_milestone_D_split/api$ curl -s http://127.0.0.1:8750/admin/kg/version -H "X-API-KEY: $ADMIN_API_KEY" | jq
+curl -s http://127.0.0.1:8750/admin/kg/version -H "X-API-KEY: $ADMIN_API_KEY" | jq
 {
   "kg_version": "3d9eaa22-d387-49ee-af1d-4f699377624f"
 }
@@ -83,7 +83,7 @@ categories: [heuristic_nl2sql, nl2sql]
 
 ## KG에 잘 추가됐는지 확인
 ```bash
-(ds) dnmslyyd@ncia10:~$ ~/opt/neo4j-current/bin/cypher-shell -a bolt://localhost:17687 -u neo4j -p '$ADMIN_API_KEY' "MATCH (a:Term {text:'비가동시간'})-[:SYNONYM_OF]->(c:Term {text:'다운타임'}) RETURN a.term_id, c.term_id;"
+ ~/opt/neo4j-current/bin/cypher-shell -a bolt://localhost:17687 -u neo4j -p '$ADMIN_API_KEY' "MATCH (a:Term {text:'비가동시간'})-[:SYNONYM_OF]->(c:Term {text:'다운타임'}) RETURN a.term_id, c.term_id;"
 +-----------------------------+
 | a.term_id    | c.term_id    |
 +-----------------------------+
