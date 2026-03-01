@@ -38,7 +38,8 @@ permalink: /
   />
   <div class="hero__content">
 
-안녕하세요. **최명제**입니다. ([CV](https://drive.google.com/file/d/14qXEVtlkrHqi7qTAGqEa5_LFJAyW6cIe/view?usp=sharing))  
+안녕하세요. **최명제**입니다.  
+CV link: [here](https://drive.google.com/file/d/14qXEVtlkrHqi7qTAGqEa5_LFJAyW6cIe/view?usp=sharing)  
 
 ### Current Status:
 - Postdoctoral Researcher
@@ -51,7 +52,6 @@ permalink: /
 - Graph Neural Networks
 - Global Search Algorithms for GraphRAG
 - LLM-enhanced NL2SQL Framework
-
   </div>
 </section>
 
