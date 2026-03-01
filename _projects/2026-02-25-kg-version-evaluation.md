@@ -2,7 +2,7 @@
 title: "PoC NL2SQL Framework - KG update evaluation"
 date: 2026-02-25 09:30:00 +0900
 summary: "NL2SQL PoC Evaluation"
-categories: [heuristic_nl2sql]
+categories: [heuristic_nl2sql, nl2sql]
 ---
 
 ## 추가 점검 항목
@@ -93,5 +93,4 @@ categories: [heuristic_nl2sql]
 1 row
 ready to start consuming query after 47 ms, results consumed after another 2 ms
 ```
-
 

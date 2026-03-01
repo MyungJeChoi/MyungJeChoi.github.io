@@ -2,7 +2,7 @@
 title: "PoC NL2SQL Framework - Multiturn Query 구현"
 date: 2026-02-25 09:00:00 +0900
 summary: "NL2SQL PoC Multiturn Query Demo"
-categories: [heuristic_nl2sql]
+categories: [heuristic_nl2sql, nl2sql]
 ---
 
 <style>
@@ -273,5 +273,4 @@ pre {
   ]
 }
 ```
-
 
