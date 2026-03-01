@@ -1,6 +1,6 @@
 ---
 title: "PoC NL2SQL Framework - Multiturn Query 구현"
-date: 2026-02-25
+date: 2026-02-25 09:00:00 +0900
 summary: "NL2SQL PoC Multiturn Query Demo"
 categories: [heuristic_nl2sql]
 ---
@@ -274,8 +274,4 @@ pre {
 }
 ```
 
-<!-- 4. LLM으로 교체 대상
-   1. query preparation: 현재는 고정된 형태(예. 온도 장비 top1) input만 처리가 가능
-   2. query classification 
-   3. nl2sql router
-   4. nl2sql template -->
+

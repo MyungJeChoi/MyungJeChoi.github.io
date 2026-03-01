@@ -1,6 +1,6 @@
 ---
 title: "PoC NL2SQL Framework - Evaluation"
-date: 2026-02-25
+date: 2026-02-25 09:15:00 +0900
 summary: "NL2SQL PoC Evaluation"
 categories: [heuristic_nl2sql]
 ---
@@ -69,3 +69,9 @@ python tools/eval_milestone_d.py --scenario scale --host 127.0.0.1 --port 8750
 
 - `chat_query_repeat`는 5번 반복 질의 중 최소 1회 이상 cache hit을 기대한다.
 - `asset_batch`는 자산별 쿼리를 각각 개별 체크로 분해해 집계한다.
+
+## LLM으로 교체 대상
+1. query preparation: 현재는 고정된 형태(예. 온도 장비 top1) input만 처리가 가능
+2. query classification 
+3. nl2sql router
+4. nl2sql template
