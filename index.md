@@ -31,12 +31,28 @@ permalink: /
 </style>
 
 <section class="hero">
-  <img
-    class="hero__image"
-    src="/assets/images/profile.jpg"
-    alt="최명제"
-  />
-  <div class="hero__content">
+  <picture>
+    <source
+      type="image/webp"
+      srcset="
+        {{ '/assets/images/profile-440.webp' | relative_url }} 440w,
+        {{ '/assets/images/profile-880.webp' | relative_url }} 880w
+      "
+      sizes="(max-width: 768px) 160px, 220px"
+    />
+    <img
+      class="hero__image"
+      srcset="
+        {{ '/assets/images/profile-440.jpg' | relative_url }} 440w,
+        {{ '/assets/images/profile-880.jpg' | relative_url }} 880w,
+        {{ '/assets/images/profile.jpg' | relative_url }} 2304w
+      "
+      sizes="(max-width: 768px) 160px, 220px"
+      src="{{ '/assets/images/profile-880.jpg' | relative_url }}"
+      alt="최명제"
+    />
+  </picture>
+  <div class="hero__content" markdown="1">
 
 안녕하세요. **최명제**입니다.  
 CV link: [here](https://drive.google.com/file/d/14qXEVtlkrHqi7qTAGqEa5_LFJAyW6cIe/view?usp=sharing)  
