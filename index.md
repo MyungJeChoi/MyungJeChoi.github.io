@@ -54,7 +54,8 @@ permalink: /
   </picture>
   <div class="hero__content">
     <p>안녕하세요. <strong>최명제</strong>입니다.</p>
-    <p>CV link: <a href="https://drive.google.com/file/d/14qXEVtlkrHqi7qTAGqEa5_LFJAyW6cIe/view?usp=sharing">here</a></p>
+    <p>CV link: <a href="https://drive.google.com/file/d/14qXEVtlkrHqi7qTAGqEa5_LFJAyW6cIe/view?usp=sharing">Ctrl+click here</a></p>
+    <p>Github: <a href="https://github.com/MyungJeChoi">Ctrl+click here</a></p>
     <h3>Current Status:</h3>
     <ul>
       <li>Postdoctoral Researcher</li>
@@ -72,7 +73,7 @@ permalink: /
   </div>
 </section>
 
-## Featured Projects
+## Recent Project Notes
 {% assign items = site.projects | sort: "date" | reverse %}
 {% for p in items limit: 3 %}
 - [{{ p.title }}]({{ p.url | relative_url }}) — {{ p.summary }}
